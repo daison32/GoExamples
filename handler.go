@@ -1,41 +1,44 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 )
 
-// リクエストとレスポンスを書いていく
+// 構造体に、DBを入れる
+type handler struct {
+	db1 *sqlx.DB
+}
 
-func tasksGet(c *gin.Context) {
+// ↑のhandlerのコンストラクター（初期化するための関数）
+func Newhandler(d *sqlx.DB) handler {
+	return handler{
+		db1: d,
+	}
+}
+
+// リクエストとレスポンスを書いていく
+func (h handler) tasksGet(c *gin.Context) {
+
+	tasks := []Task{}
+	err := h.db1.Select(&tasks, "select * from tasks")
+	if err != nil {
+		log.Panic(err)
+	}
 
 	response := GetResponse{
-		Tasks: []Task{
-			{
-				ID:         1,
-				Content:    "しゅくだい",
-				IsComplete: true,
-			},
-			{
-				ID:         2,
-				Content:    "おつかい",
-				IsComplete: true,
-			},
-			{
-				ID:         3,
-				Content:    "さんぽ",
-				IsComplete: false,
-			},
-		
-		},
+		Tasks: tasks,
 	}
 
 	c.JSON(200, response)
 }
 
 type Task struct {
-	ID         int    `json:"id"`
-	Content    string `json:"content"`
-	IsComplete bool   `json:"isComplete"`
+	ID         int    `db:"id" json:"id"`
+	Content    string `db:"content" json:"content"`
+	IsComplete bool   `db:"is_completed" json:"isComplete"`
 }
 
 type GetResponse struct {
