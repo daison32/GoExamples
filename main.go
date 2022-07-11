@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,17 +16,21 @@ import (
 
 func main() {
 	// DBに接続
-	db, err := sqlx.Open("postgres",
-		"user=postgres password=postgres dbname=postgres sslmode=disable")
+	// db, err := sqlx.Open("postgres",
+	// 	"user=postgres password=postgres dbname=postgres sslmode=disable")
+	// if err != nil {
+	// 	log.Panic(err)
+
+	// }
+
+	// retrieve the url
+	dns := os.Getenv("DATABASE_URL")
+	fmt.Println(dns)
+	// connect to the db
+	db, err := sqlx.Open("postgres", dns)
 	if err != nil {
 		log.Panic(err)
-
 	}
-
-	// // retrieve the url
-	// dbURL := os.Getenv("DATABASE_URL")
-	// // connect to the db
-	// db, err := sql.Open("postgres", connStr)
 
 	defer db.Close()
 	h := Newhandler(db)

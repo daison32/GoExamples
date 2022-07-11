@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// 構造体に、DBを入れる
+// 構造体に、DBを入れるKK
 type handler struct {
 	db1 *sqlx.DB
 }
