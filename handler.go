@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -44,3 +43,13 @@ type Task struct {
 type GetResponse struct {
 	Tasks []Task `json:"tasks"`
 }
+
+// 登録
+
+
+var taskExample string = `
+{
+	"content":"おつかい"
+   }
+`
+func (h handler) tasksPost(c *gin.Context)

@@ -14,6 +14,7 @@ import (
 
 // サーバーを立ち上げる
 
+
 func main() {
 	// DBに接続
 	// db, err := sqlx.Open("postgres",
@@ -52,15 +53,22 @@ func main() {
 		AllowHeaders: []string{
 			"*",
 		},
+	
 	}))
 
-	r.GET("/tasks", h.tasksGet)
+	
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "ok",
 		})
 	})
+
+	// 一覧みる
+	r.GET("/tasks", h.tasksGet)
+
+	// とうろく
+	r.POST("/tasks", h.tasksPost)
 
 	r.Run()
 }
