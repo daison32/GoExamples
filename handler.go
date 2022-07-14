@@ -57,11 +57,10 @@ func (h handler) tasksPost(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"int": json.ID, "string": json.Content, "bool": json.IsComplete})
 
-	_, err1 := h.db1.NamedExec(`INSERT INTO tasks (id,content,is_completed) VALUES (:id,:content,:is_completed)`, 
+	_, err1 := h.db1.NamedExec(`INSERT INTO tasks (content) VALUES (:content)`, 
         map[string]interface{}{
-            "id": 1,
-            "content": "おつかい",
-            "is_completed": false,
+
+            "content": "お試しPOST",
     })
 	if err1 != nil {
 		log.Panic(err1)
@@ -70,7 +69,6 @@ func (h handler) tasksPost(c *gin.Context) {
 
 
 type JsonRequest struct {
-	ID         int    `db:"id" json:"id"`
 	Content    string `db:"content" json:"content"`
 	IsComplete bool   `db:"is_completed" json:"isComplete"`
 }

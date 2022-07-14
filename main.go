@@ -26,7 +26,7 @@ func main() {
 	dns := os.Getenv("DATABASE_URL")
 	fmt.Println(dns)
 	// connect to the db
-	db, err := sqlx.Open("postgres", dns)
+	db, err := sqlx.Connect("postgres", dns)
 	if err != nil {
 		log.Panic(err)
 	}
