@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -13,7 +12,6 @@ import (
 )
 
 // サーバーを立ち上げる
-
 
 func main() {
 	// DBに接続
@@ -53,11 +51,9 @@ func main() {
 		AllowHeaders: []string{
 			"*",
 		},
-	
 	}))
 
-	
-
+	// トップページ（status:ok　と表示）
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "ok",

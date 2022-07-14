@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -47,9 +49,17 @@ type GetResponse struct {
 // 登録
 
 
-var taskExample string = `
-{
-	"content":"おつかい"
-   }
-`
-func (h handler) tasksPost(c *gin.Context)
+func (h handler) tasksPost(c *gin.Context) {
+	var json Task
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"str": json.ID, "int": json.Content, "bool": json.IsComplete})
+}
+
+type JsonRequest struct {
+	ID         int    `db:"id" json:"id"`
+	Content    string `json:"field_int"`
+	IsComplete bool   `json:"field_bool"`
+}
