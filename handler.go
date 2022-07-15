@@ -50,25 +50,22 @@ type GetResponse struct {
 
 
 func (h handler) tasksPost(c *gin.Context) {
-	var json Task
+	var json JsonRequest
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"int": json.ID, "string": json.Content, "bool": json.IsComplete})
-
+	
 	_, err1 := h.db1.NamedExec(`INSERT INTO tasks (content) VALUES (:content)`, 
-        map[string]interface{}{
-
-            "content": "お試しPOST",
-    })
+	json)
 	if err1 != nil {
 		log.Panic(err1)
 	}
+
+	c.JSON(http.StatusOK, gin.H{"string": json.Content})
 }
 
 
 type JsonRequest struct {
 	Content    string `db:"content" json:"content"`
-	IsComplete bool   `db:"is_completed" json:"isComplete"`
 }
