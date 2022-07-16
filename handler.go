@@ -88,3 +88,25 @@ func (h handler) tasksComplete(c *gin.Context) {
 type deletedStruct struct {
 	ID int `db:"id" json:"id"`
 }
+
+// UPDATE
+func (h handler) tasksEdit(c *gin.Context) {
+	var editedItem editedStruct
+	if err := c.ShouldBindJSON(&editedItem); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err1 := h.db1.NamedExec(`UPDATE tasks SET content = (:content) WHERE id = (:id)`,
+	editedItem)
+	if err1 != nil {
+		log.Panic(err1)
+	}
+
+	c.JSON(200, gin.H{"string": editedItem.ID})
+}
+
+type editedStruct struct {
+	ID int `db:"id" json:"id"`
+	Content string `db:"content" json:"content"`
+}

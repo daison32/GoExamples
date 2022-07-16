@@ -69,5 +69,9 @@ func main() {
 	// 削除
 	r.POST("/tasks/delete", h.tasksComplete)
 
+	// 編集
+	r.POST("/tasks/editing", h.tasksEdit)
+
+
 	r.Run()
 }
