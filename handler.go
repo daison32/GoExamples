@@ -21,10 +21,11 @@ func Newhandler(d *sqlx.DB) handler {
 }
 
 // リクエストとレスポンスを書いていく
+// GET
 func (h handler) tasksGet(c *gin.Context) {
 
 	tasks := []Task{}
-	err := h.db1.Select(&tasks, "select * from tasks")
+	err := h.db1.Select(&tasks, "SELECT * FROM tasks")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -46,26 +47,44 @@ type GetResponse struct {
 	Tasks []Task `json:"tasks"`
 }
 
-// 登録
-
-
+// POST
 func (h handler) tasksPost(c *gin.Context) {
-	var json JsonRequest
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var postedItem postedStruct
+	if err := c.ShouldBindJSON(&postedItem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
-	_, err1 := h.db1.NamedExec(`INSERT INTO tasks (content) VALUES (:content)`, 
-	json)
+
+	_, err1 := h.db1.NamedExec(`INSERT INTO tasks (content) VALUES (:content)`,
+		postedItem)
 	if err1 != nil {
 		log.Panic(err1)
 	}
 
-	c.JSON(200, gin.H{"string": json.Content})
+	c.JSON(200, gin.H{"string": postedItem.Content})
 }
 
+type postedStruct struct {
+	Content string `db:"content" json:"content"`
+}
 
-type JsonRequest struct {
-	Content    string `db:"content" json:"content"`
+// DELETE
+func (h handler) tasksComplete(c *gin.Context) {
+	var deletedItem deletedStruct
+	if err := c.ShouldBindJSON(&deletedItem); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err1 := h.db1.NamedExec(`DELETE FROM tasks WHERE id = (:id)`,
+	deletedItem)
+	if err1 != nil {
+		log.Panic(err1)
+	}
+
+	c.JSON(200, gin.H{"string": deletedItem.ID})
+}
+
+type deletedStruct struct {
+	ID int `db:"id" json:"id"`
 }

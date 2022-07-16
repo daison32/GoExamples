@@ -66,5 +66,8 @@ func main() {
 	// とうろく
 	r.POST("/tasks", h.tasksPost)
 
+	// 削除
+	r.POST("/tasks/delete", h.tasksComplete)
+
 	r.Run()
 }
