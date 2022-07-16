@@ -62,7 +62,7 @@ func (h handler) tasksPost(c *gin.Context) {
 		log.Panic(err1)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"string": json.Content})
+	c.JSON(200, gin.H{"string": json.Content})
 }
 
 

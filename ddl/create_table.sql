@@ -4,5 +4,5 @@ CREATE TABLE tasks(
 	is_completed boolean not null
 );
 
-ALTER TABLE tasks ALTER COLUMN is_completed boolean not null SET DEFAULT false;
+ALTER TABLE tasks ALTER COLUMN is_completed SET DEFAULT false;
 
