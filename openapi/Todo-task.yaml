@@ -1,0 +1,248 @@
+openapi: 3.1.0
+x-stoplight:
+  id: nl94gsieuoe5b
+info:
+  title: Todo task
+  version: '1.0'
+servers:
+  - url: 'https://gorensyu.herokuapp.com'
+paths:
+  /tasks:
+    parameters: []
+    get:
+      summary: Get User Info by User ID
+      tags: []
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                type: array
+                x-examples:
+                  example-1:
+                    id: 4
+                    content: 追加POST!!
+                    isComplete: false
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    content:
+                      type: string
+                    isComplete:
+                      type: boolean
+              examples:
+                example-1:
+                  value:
+                    - id: 3
+                      content: たすく３
+                      isComplete: false
+                    - id: 4
+                      content: たすく４
+                      isComplete: false
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  content:
+                    type: string
+                  isComplete:
+                    type: boolean
+                x-examples:
+                  example-1:
+                    id: 4
+                    content: 例1
+                    isComplete: false
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  '':
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    '': string
+        '400':
+          description: Bad Request
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    patch:
+      summary: Update User Information
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples: {}
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  content:
+                    type: string
+                  isComplete:
+                    type: boolean
+        '400':
+          description: Bad Request
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                isComplete:
+                  description: 'If a new email is given, the user''s email verified property will be set to false.'
+                  type: boolean
+            examples:
+              example-1:
+                value:
+                  id: 1
+                  content: たすく１
+                  isComplete: true
+        description: Patch user properties to update.
+    post:
+      summary: ''
+      operationId: post-tasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: 'null'
+                x-examples:
+                  example-1:
+                    content: 追加POST!!
+              examples:
+                example-1: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+            examples:
+              example-1:
+                value:
+                  content: string
+    put:
+      summary: ''
+      operationId: put-tasks
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  content:
+                    type: string
+                x-examples:
+                  example-1:
+                    id: 4
+                    content: 追加POST!!
+              examples:
+                example-1:
+                  value:
+                    id: 0
+                    content: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                content:
+                  type: string
+            examples:
+              example-1:
+                value:
+                  id: 0
+                  content: string
+    delete:
+      summary: ''
+      operationId: delete-tasks
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      examples:
+        - id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - emailVerified
