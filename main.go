@@ -66,11 +66,14 @@ func main() {
 	// とうろく
 	r.POST("/tasks", h.tasksPost)
 
+	// 完了
+	r.PATCH("/tasks/completion", h.tasksComplete)
+	
 	// 削除
-	r.POST("/tasks/delete", h.tasksComplete)
+	r.DELETE("/tasks", h.tasksDelete)
 
 	// 編集
-	r.POST("/tasks/editing", h.tasksEdit)
+	r.PATCH("/tasks", h.tasksEdit)
 
 
 	r.Run()

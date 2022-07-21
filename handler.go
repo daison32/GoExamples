@@ -25,7 +25,7 @@ func Newhandler(d *sqlx.DB) handler {
 func (h handler) tasksGet(c *gin.Context) {
 
 	tasks := []Task{}
-	err := h.db1.Select(&tasks, "SELECT * FROM tasks")
+	err := h.db1.Select(&tasks, "SELECT * FROM tasks ORDER BY ID")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -47,7 +47,7 @@ type GetResponse struct {
 	Tasks []Task `json:"tasks"`
 }
 
-// POST
+// 登録
 func (h handler) tasksPost(c *gin.Context) {
 	var postedItem postedStruct
 	if err := c.ShouldBindJSON(&postedItem); err != nil {
@@ -67,9 +67,29 @@ func (h handler) tasksPost(c *gin.Context) {
 type postedStruct struct {
 	Content string `db:"content" json:"content"`
 }
-
-// DELETE
+// 完了
 func (h handler) tasksComplete(c *gin.Context) {
+	var completedItem completedStruct
+	if err := c.ShouldBindJSON(&completedItem); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err1 := h.db1.NamedExec(`UPDATE tasks SET isCompleted = true WHERE id = (:id)`,
+	completedItem)
+	if err1 != nil {
+		log.Panic(err1)
+	}
+
+	c.JSON(200, gin.H{"string": completedItem.ID})
+}
+
+type completedStruct struct {
+	ID int `db:"id" json:"id"`
+}
+
+// 削除
+func (h handler) tasksDelete(c *gin.Context) {
 	var deletedItem deletedStruct
 	if err := c.ShouldBindJSON(&deletedItem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -89,7 +109,7 @@ type deletedStruct struct {
 	ID int `db:"id" json:"id"`
 }
 
-// UPDATE
+// 編集
 func (h handler) tasksEdit(c *gin.Context) {
 	var editedItem editedStruct
 	if err := c.ShouldBindJSON(&editedItem); err != nil {
