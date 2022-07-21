@@ -67,7 +67,7 @@ func (h handler) tasksPost(c *gin.Context) {
 type postedStruct struct {
 	Content string `db:"content" json:"content"`
 }
-// 完了
+// 完了 ?
 func (h handler) tasksComplete(c *gin.Context) {
 	var completedItem completedStruct
 	if err := c.ShouldBindJSON(&completedItem); err != nil {
@@ -75,7 +75,7 @@ func (h handler) tasksComplete(c *gin.Context) {
 		return
 	}
 
-	_, err1 := h.db1.NamedExec(`UPDATE tasks SET isCompleted = true WHERE id = (:id)`,
+	_, err1 := h.db1.NamedExec(`UPDATE tasks SET is_completed = true WHERE id = (:id)`,
 	completedItem)
 	if err1 != nil {
 		log.Panic(err1)
