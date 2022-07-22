@@ -81,11 +81,12 @@ func (h handler) tasksComplete(c *gin.Context) {
 		log.Panic(err1)
 	}
 
-	c.JSON(200, gin.H{"string": completedItem.ID})
+	c.JSON(200, gin.H{"ID": completedItem.ID})
 }
 
 type completedStruct struct {
 	ID int `db:"id" json:"id"`
+	// IsComplete bool `db:"is_completed" json:"isComplete"`
 }
 
 // 削除
