@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -67,6 +68,7 @@ func (h handler) tasksPost(c *gin.Context) {
 type postedStruct struct {
 	Content string `db:"content" json:"content"`
 }
+
 // 完了 ?
 func (h handler) tasksComplete(c *gin.Context) {
 	var completedItem completedStruct
@@ -75,18 +77,19 @@ func (h handler) tasksComplete(c *gin.Context) {
 		return
 	}
 
-	_, err1 := h.db1.NamedExec(`UPDATE tasks SET is_completed = true WHERE id = (:id)`,
-	completedItem)
+	status := strconv.FormatBool(completedItem.IsComplete)
+	_, err1 := h.db1.NamedExec("UPDATE tasks SET is_completed = " + status + " WHERE id = (:id)",
+		completedItem)
 	if err1 != nil {
 		log.Panic(err1)
 	}
 
-	c.JSON(200, gin.H{"ID": completedItem.ID})
+	c.JSON(200, gin.H{"ID": completedItem.ID, "IsComplete": completedItem.IsComplete})
 }
 
 type completedStruct struct {
-	ID int `db:"id" json:"id"`
-	// IsComplete bool `db:"is_completed" json:"isComplete"`
+	ID         int  `db:"id" json:"id"`
+	IsComplete bool `db:"is_completed" json:"isComplete"`
 }
 
 // 削除
@@ -96,9 +99,9 @@ func (h handler) tasksDelete(c *gin.Context) {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	// 	return
 	// }
-	
+
 	sql_str := "delete from tasks WHERE is_completed = true"
-	_, err := h.db1.Exec (sql_str)
+	_, err := h.db1.Exec(sql_str)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -118,7 +121,7 @@ func (h handler) tasksEdit(c *gin.Context) {
 	}
 
 	_, err1 := h.db1.NamedExec(`UPDATE tasks SET content = (:content) WHERE id = (:id)`,
-	editedItem)
+		editedItem)
 	if err1 != nil {
 		log.Panic(err1)
 	}
@@ -127,6 +130,6 @@ func (h handler) tasksEdit(c *gin.Context) {
 }
 
 type editedStruct struct {
-	ID int `db:"id" json:"id"`
+	ID      int    `db:"id" json:"id"`
 	Content string `db:"content" json:"content"`
 }
