@@ -91,24 +91,23 @@ type completedStruct struct {
 
 // 削除
 func (h handler) tasksDelete(c *gin.Context) {
-	var deletedItem deletedStruct
-	if err := c.ShouldBindJSON(&deletedItem); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	// var deletedItem deletedStruct
+	// if err := c.ShouldBindJSON(&deletedItem); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	
+	sql_str := "delete from tasks WHERE is_completed = true"
+	_, err := h.db1.Exec (sql_str)
+	if err != nil {
+		log.Panic(err)
 	}
 
-	_, err1 := h.db1.NamedExec(`DELETE FROM tasks WHERE id = (:id)`,
-	deletedItem)
-	if err1 != nil {
-		log.Panic(err1)
-	}
-
-	c.JSON(200, gin.H{"string": deletedItem.ID})
 }
 
-type deletedStruct struct {
-	ID int `db:"id" json:"id"`
-}
+// type deletedStruct struct {
+// 	ID int `db:"id" json:"id"`
+// }
 
 // 編集
 func (h handler) tasksEdit(c *gin.Context) {
